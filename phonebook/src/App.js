@@ -2,23 +2,30 @@ import React, { useState } from 'react'
 
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
   const [newName, setNewName] = useState('')
+
+  const isPersonExist = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
 
   const addNewName = (e) => {
     e.preventDefault()
     const newPerson = {
       name: newName,
       // id: persons.length + 1
-      }
-    setPersons(persons.concat(newPerson))
+    }
+
+    isPersonExist ? alert(newName + ' is already added to phonebook') : setPersons(persons.concat(newPerson))
+ 
     setNewName('')
   }
    
   const onHandleChange = (e) => {
-    setNewName(e.target.value)
-  }
+    setNewName(e.target.value)    
+    }
 
+    
   return (
     <div>
       <h2>Phonebook</h2>
