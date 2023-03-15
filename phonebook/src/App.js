@@ -5,6 +5,7 @@ import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Title from './Title'
 import axios from 'axios'
+import { getAll, create } from './services/api'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -24,17 +25,14 @@ const App = () => {
   // useEffect(data, [])
 
   useEffect(() => {
-    // console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    getAll()
       .then(response => {
-        // console.log('promise fulfilled:', response.data)
-        setPersons(response.data)
-      }
-    )
+       setPersons(response.data)
+      })
   }, [])
 
-  const isPersonExist = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+  const isPersonExist = persons.some(person => person?.name?.toLowerCase() === newName.toLowerCase())
+
   const isNumberExist = persons.some(person => person.number === newNumber)
 
   const reset = () => {
@@ -52,17 +50,15 @@ const App = () => {
     }
 
     const newContact = () => {
-      axios
-        .post('http://localhost:3001/persons', newPerson)
+      create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
-          }
-        )
+        }
+      )
     }
 
       
-    isPersonExist && isNumberExist ?
-      alert(newName + ' ' + newNumber + ' is already added to phonebook') : newContact()
+    isPersonExist && isNumberExist ? alert(newName + ' ' + newNumber + ' is already added to phonebook') : newContact()
         
     reset()
   }
