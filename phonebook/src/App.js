@@ -5,7 +5,7 @@ import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Title from './Title'
 import axios from 'axios'
-import { getAll, create } from './services/api'
+import { getAll, create, remove } from './services/api'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -52,6 +52,8 @@ const App = () => {
     const newContact = () => {
       create(newPerson)
         .then(response => {
+          // console.log(response.data);
+          // console.log(response.data);
           setPersons(persons.concat(response.data))
         }
       )
@@ -63,6 +65,26 @@ const App = () => {
     reset()
   }
    
+  const removeContact = (e) => {
+    const id = Number(e.target.id)
+    const name = e.target.name
+    
+    if (window.confirm(`Delete ${name}?`)) {
+      remove(id)
+        .then(       
+        // console.log(response.config[0]);
+        // console.log(id),
+        // console.log("persons before", persons),
+          setPersons(persons.filter(person => {
+            // console.log(typeof(p.id));
+            // console.log("id in: ", typeof(id));
+           return person.id !== id
+          })),
+        // console.log("persons after",persons)
+        )
+      }
+  }
+
   const onHandleChange = (e) => {
     const { value, name } = e.target
     switch (name) {
@@ -97,7 +119,10 @@ const App = () => {
         newNumber={newNumber}
         onChange={onHandleChange} />
       <Title text="Numbers" />
-      <ContactList persons={filteredList()} />
+      <ContactList
+        persons={filteredList()}
+        remove={removeContact}
+      />
     </div>
   )
 }
