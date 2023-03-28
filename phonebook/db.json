@@ -17,8 +17,18 @@
     },
     {
       "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
+      "number": "236",
       "id": 4
+    },
+    {
+      "name": "Nick",
+      "number": "12354",
+      "id": 6
+    },
+    {
+      "name": "Alice",
+      "number": "111",
+      "id": 7
     }
   ]
 }

@@ -4,14 +4,17 @@ import Filter from './Filter'
 // import Input from './Input'
 import PersonForm from './PersonForm'
 import Title from './Title'
-import axios from 'axios'
-import { getAll, create, remove } from './services/api'
+// import axios from 'axios'
+import { getAll, create, remove, update } from './services/api'
+import Notification from './Notification'
+import "./index.css"
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   // const data = () => {
   //   axios
@@ -27,13 +30,18 @@ const App = () => {
   useEffect(() => {
     getAll()
       .then(response => {
+        console.log(response.data);
        setPersons(response.data)
       })
   }, [])
 
-  const isPersonExist = persons.some(person => person?.name?.toLowerCase() === newName.toLowerCase())
+  // const isPersonExist = persons.some(person => person?.name?.toLowerCase() === newName.toLowerCase())
+  // console.log(isPersonExist);
 
-  const isNumberExist = persons.some(person => person.number === newNumber)
+  const existedPerson = persons.find(person => person?.name?.toLowerCase() === newName.toLowerCase())
+  // console.log(existedPerson);
+
+  // const isNumberExist = persons.some(person => person.number === newNumber)
 
   const reset = () => {
     setNewName((prev) => '')
@@ -50,17 +58,50 @@ const App = () => {
     }
 
     const newContact = () => {
+      console.log(newPerson);
       create(newPerson)
         .then(response => {
-          // console.log(response.data);
-          // console.log(response.data);
           setPersons(persons.concat(response.data))
+          setErrorMessage({
+            message: `Added ${response.data.name}`,
+            type: 'success'
+          }
+            )
+          setTimeout(() => { setErrorMessage('') }, 1500)
         }
       )
     }
 
+    const changePerson = ( id ) => {
+      // const url = `http://localhost:3001/persons/${id}`
+      const contact = persons.find(person => person.id === id)
+      const changedContact = { ...contact, number: newNumber  }
       
-    isPersonExist && isNumberExist ? alert(newName + ' ' + newNumber + ' is already added to phonebook') : newContact()
+      // axios.put(url, changedContact)
+        update(id,changedContact)
+        .then(response => {
+          console.log(response.data);
+          setPersons(persons.map(person => person.id !== id ? person : response.data))
+          setErrorMessage({
+            message: `${response.data.name} number has been changed to ${response.data.number}`,
+            type: "success"
+          }
+            )
+          setTimeout(() => { setErrorMessage('') }, 3000)
+        })
+          .catch(error => {
+            setErrorMessage({
+              message: `Information ${changedContact.name} has already been removed from server`,
+              type: "error"
+            })
+            setTimeout(() => { setErrorMessage('') }, 3000)
+        })
+    }
+      
+    // isPersonExist && isNumberExist ? alert(newName + ' ' + newNumber + ' is already added to phonebook') : newContact()
+
+    existedPerson ?
+     (window.confirm(`${newName} is already added to ponebook, replace the old number with the new one?`) && changePerson(existedPerson.id)) : newContact()
         
     reset()
   }
@@ -71,18 +112,11 @@ const App = () => {
     
     if (window.confirm(`Delete ${name}?`)) {
       remove(id)
-        .then(       
-        // console.log(response.config[0]);
-        // console.log(id),
-        // console.log("persons before", persons),
-          setPersons(persons.filter(person => {
-            // console.log(typeof(p.id));
-            // console.log("id in: ", typeof(id));
-           return person.id !== id
-          })),
-        // console.log("persons after",persons)
-        )
-      }
+        .then(setPersons(persons.filter(person => {
+          return person.id !== id
+        }))
+      )
+    }
   }
 
   const onHandleChange = (e) => {
@@ -103,10 +137,14 @@ const App = () => {
   const normalizedFilter = filter.toLowerCase()
   return normalizedFilter ? persons.filter(person => person.name.toLowerCase().includes(normalizedFilter)) : persons              
   }
-    
+ 
   return (
     <div>
       <Title text="Phonebook" />
+      <Notification
+        message={errorMessage.message}
+        type={errorMessage.type}
+      />
       <Filter 
         text="filter shown with: "
         name="filter"
