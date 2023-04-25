@@ -1,22 +1,18 @@
 import React from 'react';
 import LanguagesList from './LanguagesList';
 
-const CountryInfo = ({ countryInfo }) => {
-  console.log('countryInfo inside:', countryInfo);
+const CountryInfo = ({ props }) => {
+  console.log('props inside:', props);
   return (
     <>
-      <h2>{countryInfo.name.common}</h2>
+      <h2>{props.name.common}</h2>
       <p>
-        Capital: <b>{countryInfo.capital}</b>
+        Capital: <b>{props.capital}</b>
       </p>
-      <p>Population: {countryInfo.population}</p>
-      <p>Area: {countryInfo.area} sq.kms</p>
-      <LanguagesList languages={countryInfo.languages} />
-      <img
-        src={countryInfo.flags.png}
-        alt={countryInfo.flags.alt}
-        width='400'
-      />
+      <p>Population: {props.population}</p>
+      <p>Area: {props.area} sq.kms</p>
+      <LanguagesList languages={props.languages} />
+      <img src={props.flags.png} alt={props.flags.alt} width='400' />
     </>
   );
 };

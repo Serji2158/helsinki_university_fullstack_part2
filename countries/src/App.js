@@ -38,7 +38,7 @@ function App() {
   // console.log('searchResult:', searchResult());
 
   const resultCountries = searchResult();
-  // console.log('resultCountries:', resultCountries);
+  console.log('resultCountries:', resultCountries);
 
   const countryInfo = countries.filter(
     country => country.name.common.toLowerCase() === value.toLowerCase()
@@ -54,11 +54,14 @@ function App() {
       {!value ? (
         <div></div>
       ) : countryInfo && resultCountries.length === 1 ? (
-        <CountryInfo countryInfo={countryInfo} />
+        <CountryInfo props={countryInfo} />
       ) : resultCountries.length > 10 ? (
         <p>Too many matches, specify another filter</p>
       ) : resultCountries.length < 10 && resultCountries.length !== 1 ? (
-        <CountriesList resultCountries={resultCountries} />
+        <CountriesList
+          resultCountries={resultCountries}
+          countries={countries}
+        />
       ) : (
         <div></div>
       )}
