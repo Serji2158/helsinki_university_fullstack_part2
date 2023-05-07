@@ -1,18 +1,30 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
 import LanguagesList from './LanguagesList';
+import WeatherCapitalInfo from './WeatherCapitalInfo';
 
-const CountryInfo = ({ props }) => {
-  console.log('props inside:', props);
+const CountryInfo = ({ countryView, weatherInCapital }) => {
+  console.log(
+    '🚀 ~ file: CountryInfo.js:6 ~ CountryInfo ~ countryView:',
+    countryView
+  );
+
   return (
     <>
-      <h2>{props.name.common}</h2>
+      <h2>{countryView.name.common}</h2>
       <p>
-        Capital: <b>{props.capital}</b>
+        Capital: <b>{countryView.capital}</b>
       </p>
-      <p>Population: {props.population}</p>
-      <p>Area: {props.area} sq.kms</p>
-      <LanguagesList languages={props.languages} />
-      <img src={props.flags.png} alt={props.flags.alt} width='400' />
+      <p>Population: {countryView.population}</p>
+      <p>Area: {countryView.area} sq.kms</p>
+      <LanguagesList languages={countryView.languages} />
+      <img
+        src={countryView.flags.png}
+        alt={countryView.flags.alt}
+        width='400'
+      />
+      <h2>Weather in {countryView.capital}</h2>
+      <WeatherCapitalInfo weatherInCapital={weatherInCapital} />
     </>
   );
 };
