@@ -1,5 +1,3 @@
-import axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
 import LanguagesList from './LanguagesList';
 import WeatherCapitalInfo from './WeatherCapitalInfo';
 
